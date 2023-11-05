@@ -5,9 +5,10 @@ import data_loader
 import utility_functions
 
 # Settings
-x_shift = -5
-y_shift = -5
+x_shift = 0
+y_shift = 0
 desired_resolution = f'10m'
+ndwi_threshold = 0.08
 
 gdal_calc_path = 'C:\\ProgramData\\anaconda3\\Scripts\\gdal_calc.py'
 output_image = data_loader.generate_output_image_name(
