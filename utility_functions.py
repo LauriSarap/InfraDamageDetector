@@ -57,17 +57,3 @@ def shift_raster(input_file, output_file, x_shift, y_shift):
     # Clean up
     dataset = None
     out_dataset = None
-
-
-def calculate_ndwi(green_band_path, nir_band_path):
-    # Load the green and NIR bands
-    green = gdal.Open(green_band_path).ReadAsArray().astype(float)
-    nir = gdal.Open(nir_band_path).ReadAsArray().astype(float)
-
-    # Calculate NDWI
-    ndwi = (green - nir) / (green + nir)
-
-    # Create a mask for water bodies
-    water_mask = ndwi > 0  # Threshold can be adjusted based on the specific satellite data
-
-    return water_mask
