@@ -15,23 +15,25 @@ def generate_output_image_name(base_name="output_image", extension=".tif"):
 def find_band_files(directory, bands, resolution):
     files = {band: None for band in bands}
 
-    if resolution == 'm10':
-        for filename in os.listdir(directory):
-            for band in bands:
-                if f"_B{band}_{resolution}" in filename:
-                    files[band] = os.path.join(directory, filename)
-                    break
-                elif f"_B_11_20m" in filename:
-                    files[band] = os.path.join(directory, filename)
-                    break
+    # List all files in the directory
+    all_files = os.listdir(directory)
 
-    if resolution == 'm20':
-        for filename in os.listdir(directory):
-            for band in bands:
-                if f"_B{band}_{resolution}" in filename:
-                    files[band] = os.path.join(directory, filename)
-                    break
-                elif f"_B_08_10m" in filename:
-                    files[band] = os.path.join(directory, filename)
-                    break
+    # Loop through each band and find the corresponding file
+    for band in bands:
+        print(f'Looking for band {band}')
+
+        pattern = f"_B{band}_{resolution}.jp2"
+
+        if band == '11' and resolution == '10m':
+            pattern = "_B11_20m.jp2"
+
+        if band == '08' and resolution == '20m':
+            pattern = "_B08_10m.jp2"
+
+        for filename in all_files:
+            if pattern in filename:
+                files[band] = os.path.join(directory, filename)
+                print(f'Added {files[band]}')
+                break
+
     return files

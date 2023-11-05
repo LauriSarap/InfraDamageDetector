@@ -7,11 +7,11 @@ import utility_functions
 # Settings
 x_shift = -5
 y_shift = -5
-desired_resolution = f'm{10}'
+desired_resolution = f'20m'
 
 gdal_calc_path = 'C:\\ProgramData\\anaconda3\\Scripts\\gdal_calc.py'
 output_image = data_loader.generate_output_image_name(
-    base_name='11_01_2023_and_27_09_2023_difference')
+    base_name=f'11_01_2023_and_27_09_2023_difference_{desired_resolution}')
 
 newimage_directory = "new_images/"
 oldimage_directory = "old_images/"
@@ -19,7 +19,7 @@ bands = ['08', '11']
 
 
 def convert_bands(new_images, old_images, desired_resolution):
-    if desired_resolution == 'm10':
+    if desired_resolution == '10m':
         print("Converting B11s to 10m resolution")
         if new_images['11'].endswith('_20m.jp2'):
             new_converted = new_images['11'].replace('_20m.jp2', '_10m.jp2')
@@ -39,7 +39,7 @@ def convert_bands(new_images, old_images, desired_resolution):
                 utility_functions.convert_band_m20_to_m10(old_images['11'], old_converted)
                 old_images['11'] = old_converted
 
-    elif desired_resolution == 'm20':
+    elif desired_resolution == '20m':
         print("Converting B08s to 20m resolution")
         if new_images['08'].endswith('_10m.jp2'):
             new_converted = new_images['08'].replace('_10m.jp2', '_20m.jp2')
@@ -93,9 +93,9 @@ def calculate_difference(new_images, old_images, output_image):
     subprocess.run(diff_calc_cmd)
 
 
-new_images = data_loader.find_band_files(newimage_directory, bands)
-old_images = data_loader.find_band_files(oldimage_directory, bands)
+new_images = data_loader.find_band_files(newimage_directory, bands, desired_resolution)
+old_images = data_loader.find_band_files(oldimage_directory, bands, desired_resolution)
 
-new_images, old_images = convert_bands(new_images, old_images)
+new_images, old_images = convert_bands(new_images, old_images, desired_resolution)
 old_images = shift_old_rasters(old_images, x_shift, y_shift)
 calculate_difference(new_images, old_images, output_image)
