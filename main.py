@@ -7,7 +7,7 @@ import utility_functions
 # Settings
 x_shift = -5
 y_shift = -5
-desired_resolution = f'20m'
+desired_resolution = f'10m'
 
 gdal_calc_path = 'C:\\ProgramData\\anaconda3\\Scripts\\gdal_calc.py'
 output_image = data_loader.generate_output_image_name(
@@ -65,12 +65,14 @@ def convert_bands(new_images, old_images, desired_resolution):
 def shift_old_rasters(old_images, x_shift, y_shift):
     print(f'Shifting old rasters by X:{x_shift} and Y:{y_shift}')
     for band in old_images:
-        if os.path.exists(old_images[band].replace('.jp2', f'_shifted_{x_shift}_{y_shift}.jp2')):
-            print("Old image already shifted")
+        shifted_old = old_images[band].replace('.jp2', f'_shifted_{x_shift}x_{y_shift}y.jp2')
+        if os.path.exists(shifted_old):
+            print(f'{shifted_old} already shifted')
+            old_images[band] = shifted_old
             continue
-        shifted_old = old_images[band].replace('.jp2', '_shifted.jp2')
-        utility_functions.shift_raster(old_images[band], shifted_old, x_shift, y_shift)
-        old_images[band] = shifted_old
+        else:
+            utility_functions.shift_raster(old_images[band], shifted_old, x_shift, y_shift)
+            old_images[band] = shifted_old
 
     return old_images
 
@@ -89,7 +91,11 @@ def calculate_difference(new_images, old_images, output_image):
         # '--NoDataValue=0'
     ]
 
-    print("Running diff calc")
+    print("Running diff calc with the following files:")
+    print(f'Old B08: {old_images["08"]}')
+    print(f'Old B11: {old_images["11"]}')
+    print(f'New B08: {new_images["08"]}')
+    print(f'New B11: {new_images["11"]}')
     subprocess.run(diff_calc_cmd)
 
 
