@@ -10,8 +10,9 @@ y_shift = 0
 gdal_calc_path = 'C:\\ProgramData\\anaconda3\\Scripts\\gdal_calc.py'
 output_image = data_loader.generate_output_image_name()
 
-newimage_directory = "newimage/"
-oldimage_directory = "oldimage/"
+newimage_directory = "newimages/"
+oldimage_directory = "oldimages/"
+bands = ['08', '11']
 
 def convert_band(m20_b11, m10_b11):
     image_band_conversion_cmd = [
@@ -95,8 +96,6 @@ def process_images(new_images, old_images):
     print("Running diff calc")
     subprocess.run(diff_calc_cmd)
 
-
-bands = ['03', '08', '11']
 
 new_images = data_loader.find_band_files(newimage_directory, bands)
 old_images = data_loader.find_band_files(oldimage_directory, bands)
