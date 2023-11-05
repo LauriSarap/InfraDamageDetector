@@ -12,11 +12,26 @@ def generate_output_image_name(base_name="output_image", extension=".tif"):
     return output_image
 
 
-def find_band_files(directory, bands):
+def find_band_files(directory, bands, resolution):
     files = {band: None for band in bands}
-    for filename in os.listdir(directory):
-        for band in bands:
-            if f"_B{band}_" in filename:
-                files[band] = os.path.join(directory, filename)
-                break  # Found the band file, move to the next one
+
+    if resolution == 'm10':
+        for filename in os.listdir(directory):
+            for band in bands:
+                if f"_B{band}_{resolution}" in filename:
+                    files[band] = os.path.join(directory, filename)
+                    break
+                elif f"_B_11_20m" in filename:
+                    files[band] = os.path.join(directory, filename)
+                    break
+
+    if resolution == 'm20':
+        for filename in os.listdir(directory):
+            for band in bands:
+                if f"_B{band}_{resolution}" in filename:
+                    files[band] = os.path.join(directory, filename)
+                    break
+                elif f"_B_08_10m" in filename:
+                    files[band] = os.path.join(directory, filename)
+                    break
     return files
